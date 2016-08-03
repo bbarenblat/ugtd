@@ -1,0 +1,13 @@
+# Editor backup files
+*~
+\#*
+.\#*
+.*.swp
+
+# Ur/Web
+ugtd
+
+
+# Local Variables:
+# mode: conf
+# End:
