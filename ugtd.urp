@@ -8,4 +8,5 @@ library mdl
 script https://storage.googleapis.com/code.getmdl.io/1.1.3/material.min.js
 rewrite url Main/main
 
+$/list
 main

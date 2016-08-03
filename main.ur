@@ -14,9 +14,28 @@ specific language governing permissions and limitations under the License. *)
 
 open Mdl
 
+type nextAction = string
+
+val actionsForTesting =
+  Cons ("Print cover for TPS report",
+  Cons ("Collect information for TPS report",
+  Cons ("Generate charts for TPS report",
+  Cons ("Lorem ipsum dolor sit amet",
+  Nil))))
+
 (* Forces JavaScript to be enabled on the given page, so as to pull in external
 scripts specified in the .urp file. *)
 val forceJavaScript = <xml><script code={return ()} /></xml>
+
+fun renderNextAction action =
+  <xml>
+    <li class="mdl-list__item">
+      <span class="mdl-list__item-primary-content">
+        {[action]}
+      </span>
+    </li>
+  </xml>
+
 
 val main =
   setHeader (blessResponseHeader "X-UA-Compatible") "IE=edge";
@@ -41,13 +60,17 @@ val main =
       {forceJavaScript}
     </head>
     <body>
-      <div class="mdl-layout__header mdl-layout__header--waterfall mdl-layout__header--waterfall-hide-top">
-        <div class="mdl-layout__header-row">
-          <span class="mdl-layout-title">Next actions</span>
+      <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <div class="mdl-layout__header mdl-layout__header--waterfall mdl-layout__header--waterfall-hide-top">
+          <div class="mdl-layout__header-row">
+            <span class="mdl-layout-title">Next actions</span>
+          </div>
         </div>
-      </div>
-      <div class="mdl-layout__content">
-        Hello, world!
+        <div class="mdl-layout__content">
+          <ul class="mdl-list">
+            {List.mapX renderNextAction actionsForTesting}
+          </ul>
+        </div>
       </div>
     </body>
   </xml>
