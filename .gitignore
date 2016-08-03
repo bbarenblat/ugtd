@@ -4,6 +4,10 @@
 .\#*
 .*.swp
 
+# MDL
+mdl/lib.urp
+mdl/mdl.ur
+
 # Ur/Web
 ugtd
 

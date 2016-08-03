@@ -12,9 +12,15 @@
 # License for the specific language governing permissions and limitations under
 # the License.
 
-ugtd: ugtd.urp main.urs main.ur
+ugtd: ugtd.urp mdl main.urs main.ur
 	urweb -ccompiler build_scripts/clang -output $@ ugtd
+
+.PHONY: mdl
+mdl: mdl/lib.urp mdl/mdl.ur
+mdl/lib.urp mdl/mdl.ur: mdl/classes
+	build_scripts/generate_mdl <$<
 
 .PHONY: clean
 clean:
+	$(RM) mdl/lib.urp mdl/mdl.ur
 	$(RM) ugtd

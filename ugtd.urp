@@ -1,1 +1,11 @@
+allow meta msapplication-tap-highlight
+allow meta theme-color
+allow meta viewport
+allow responseHeader X-UA-Compatible
+allow url https://fonts.googleapis.com/*
+allow url https://code.getmdl.io/*
+library mdl
+script https://storage.googleapis.com/code.getmdl.io/1.1.3/material.min.js
+rewrite url Main/main
+
 main

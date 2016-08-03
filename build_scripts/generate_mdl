@@ -1,0 +1,39 @@
+#!/usr/bin/python3
+# Copyright 2016 Benjamin Barenblat
+#
+# Licensed under the Apache License, Version 2.0 (the “License”); you may not
+# use this file except in compliance with the License.  You may obtain a copy of
+# the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an “AS IS” BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+# License for the specific language governing permissions and limitations under
+# the License.
+
+import fileinput
+
+urp_lines = []
+ur_lines = []
+for css_name in fileinput.input():
+    css_name = css_name.strip()
+    urweb_name = css_name.replace("-", "_")
+
+    # Special cases for name collisions
+    if (css_name.startswith("mdl-mega-footer") or
+        css_name.startswith("mdl-mini-footer") or
+        css_name.startswith("mdl-progress")):
+        urweb_name = css_name.replace("--", "---").replace("-", "_")
+    urp_lines.append(
+        "rewrite style Mdl/{} {}".format(urweb_name, css_name))
+    ur_lines.append("style {}  (* {} *)".format(urweb_name, css_name))
+
+urp_lines.append("")
+urp_lines.append("mdl")
+
+with open("mdl/lib.urp", "w") as urp_file:
+    urp_file.write('\n'.join(urp_lines))
+with open("mdl/mdl.ur", "w") as ur_file:
+    ur_file.write('\n'.join(ur_lines))
