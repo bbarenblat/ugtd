@@ -4,9 +4,11 @@ allow meta viewport
 allow responseHeader X-UA-Compatible
 allow url https://fonts.googleapis.com/*
 allow url https://code.getmdl.io/*
+database dbname=ugtd.db
+dbms sqlite
 library mdl
 script https://storage.googleapis.com/code.getmdl.io/1.1.3/material.min.js
+sql initialize.sql
 rewrite url Main/main
 
-$/list
 main

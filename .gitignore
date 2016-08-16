@@ -9,6 +9,8 @@ mdl/lib.urp
 mdl/mdl.ur
 
 # Ur/Web
+*.db
+initialize.sql
 ugtd
 
 

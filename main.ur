@@ -14,14 +14,9 @@ specific language governing permissions and limitations under the License. *)
 
 open Mdl
 
-type nextAction = string
-
-val actionsForTesting =
-  Cons ("Print cover for TPS report",
-  Cons ("Collect information for TPS report",
-  Cons ("Generate charts for TPS report",
-  Cons ("Lorem ipsum dolor sit amet",
-  Nil))))
+table nextAction : {
+  Nam : string,
+}
 
 (* Forces JavaScript to be enabled on the given page, so as to pull in external
 scripts specified in the .urp file. *)
@@ -31,13 +26,14 @@ fun renderNextAction action =
   <xml>
     <li class="mdl-list__item">
       <span class="mdl-list__item-primary-content">
-        {[action]}
+        {[action.Nam]}
       </span>
     </li>
   </xml>
 
 
 val main =
+  actionItems <- queryX1 (SELECT * FROM nextAction) renderNextAction;
   setHeader (blessResponseHeader "X-UA-Compatible") "IE=edge";
   return <xml>
     <head>
@@ -68,7 +64,7 @@ val main =
         </div>
         <div class="mdl-layout__content">
           <ul class="mdl-list">
-            {List.mapX renderNextAction actionsForTesting}
+            {actionItems}
           </ul>
         </div>
       </div>

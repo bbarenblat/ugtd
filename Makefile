@@ -14,8 +14,16 @@
 
 MDL = mdl/lib.urp mdl/mdl.ur
 
-ugtd: ugtd.urp $(MDL) main.urs main.ur
-	urweb -ccompiler build_scripts/clang -output $@ ugtd
+.PHONY: all
+all: ugtd ugtd.db
+
+ugtd initialize.sql: ugtd.urp $(MDL) main.urs main.ur
+	urweb -ccompiler build_scripts/clang -output ugtd ugtd
+
+ugtd.db: initialize.sql prepopulate.sql
+	printf "" >$@
+	sqlite3 $@ <initialize.sql
+	sqlite3 $@ <prepopulate.sql
 
 .PHONY: mdl
 mdl: $(MDL)
@@ -25,4 +33,5 @@ $(MDL): mdl/classes
 .PHONY: clean
 clean:
 	$(RM) $(MDL)
-	$(RM) ugtd
+	$(RM) ugtd.db
+	$(RM) ugtd initialize.sql
