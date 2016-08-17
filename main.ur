@@ -23,9 +23,15 @@ scripts specified in the .urp file. *)
 val forceJavaScript = <xml><script code={return ()} /></xml>
 
 fun renderNextAction action =
-  <xml>
+  c <- fresh;
+  return <xml>
     <li class="mdl-list__item">
       <span class="mdl-list__item-primary-content">
+        <span class="mdl-list__item-icon">
+          <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for={c}>
+            <ccheckbox id={c} class="mdl-checkbox__input" />
+          </label>
+        </span>
         {[action.Nam]}
       </span>
     </li>
@@ -33,7 +39,7 @@ fun renderNextAction action =
 
 
 val main =
-  actionItems <- queryX1 (SELECT * FROM nextAction) renderNextAction;
+  actionItems <- queryX1' (SELECT * FROM nextAction) renderNextAction;
   setHeader (blessResponseHeader "X-UA-Compatible") "IE=edge";
   return <xml>
     <head>
