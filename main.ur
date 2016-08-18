@@ -15,13 +15,17 @@ specific language governing permissions and limitations under the License. *)
 open Mdl
 
 table nextAction : {
+  Id : int,
   Nam : string,
   Done : bool,
-}
+} PRIMARY KEY Id
 
 (* Forces JavaScript to be enabled on the given page, so as to pull in external
 scripts specified in the .urp file. *)
 val forceJavaScript = <xml><script code={return ()} /></xml>
+
+fun markNextActionStatus id done =
+  dml (UPDATE nextAction SET Done = {[done]} WHERE Id = {[id]})
 
 fun renderNextAction action =
   c <- fresh;
@@ -31,7 +35,11 @@ fun renderNextAction action =
       <span class="mdl-list__item-primary-content">
         <span class="mdl-list__item-icon">
           <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for={c}>
-            <ccheckbox id={c} source={done} class="mdl-checkbox__input" />
+            <ccheckbox id={c} source={done} class="mdl-checkbox__input"
+              onchange={
+                b <- get done;
+                rpc (markNextActionStatus action.Id b)
+              } />
           </label>
         </span>
         {[action.Nam]}

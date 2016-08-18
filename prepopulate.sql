@@ -12,9 +12,9 @@
 -- License for the specific language governing permissions and limitations under
 -- the License.
 
-INSERT INTO uw_Main_nextAction (uw_nam, uw_done)
+INSERT INTO uw_Main_nextAction (uw_id, uw_nam, uw_done)
 VALUES
-  ("Print cover for TPS report", 1),
-  ("Collect information for TPS report", 0),
-  ("Generate charts for TPS report", 0),
-  ("Lorem ipsum dolor sit amet", 0);
+  (0, "Print cover for TPS report", 1),
+  (1, "Collect information for TPS report", 0),
+  (2, "Generate charts for TPS report", 0),
+  (3, "Lorem ipsum dolor sit amet", 0);
