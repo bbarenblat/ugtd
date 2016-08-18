@@ -16,6 +16,7 @@ open Mdl
 
 table nextAction : {
   Nam : string,
+  Done : bool,
 }
 
 (* Forces JavaScript to be enabled on the given page, so as to pull in external
@@ -24,12 +25,13 @@ val forceJavaScript = <xml><script code={return ()} /></xml>
 
 fun renderNextAction action =
   c <- fresh;
+  done <- source action.Done;
   return <xml>
     <li class="mdl-list__item">
       <span class="mdl-list__item-primary-content">
         <span class="mdl-list__item-icon">
           <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for={c}>
-            <ccheckbox id={c} class="mdl-checkbox__input" />
+            <ccheckbox id={c} source={done} class="mdl-checkbox__input" />
           </label>
         </span>
         {[action.Nam]}
