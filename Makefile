@@ -17,8 +17,14 @@ MDL_GENERATED = mdl/mdlClasses.urp mdl/mdlClasses.ur
 .PHONY: all
 all: ugtd ugtd.db
 
-ugtd initialize.sql: ugtd.urp $(MDL_GENERATED) mdl/lib.urp mdl/mdl.ur main.urs \
-  main.ur
+ugtd initialize.sql: \
+  ugtd.urp \
+    mdl/lib.urp \
+      mdl/mdlFfi.urs mdl/mdlFfi.js \
+      mdl/mdlClasses.urp \
+        mdl/mdlClasses.ur \
+      mdl/mdl.ur \
+    main.urs main.ur
 	urweb -ccompiler build_scripts/clang -output ugtd ugtd
 
 ugtd.db: initialize.sql prepopulate.sql
@@ -26,9 +32,7 @@ ugtd.db: initialize.sql prepopulate.sql
 	sqlite3 $@ <initialize.sql
 	sqlite3 $@ <prepopulate.sql
 
-.PHONY: mdl
-mdl: $(MDL_GENERATED)
-$(MDL_GENERATED): mdl/classes
+mdl/mdlClasses.urp mdl/mdlClasses.ur: mdl/classes
 	build_scripts/generate_mdl <$<
 
 .PHONY: clean

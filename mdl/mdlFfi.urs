@@ -12,20 +12,4 @@ under the License is distributed on an “AS IS” BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations under the License. *)
 
-structure Classes = MdlClasses
-open Classes
-
-structure Toast = struct
-  val make : transaction {Placeholder: xbody,
-                          Show: string -> transaction unit} =
-    id <- fresh;
-    return {
-      Placeholder = <xml>
-        <div id={id} class="mdl-js-snackbar mdl-snackbar">
-          <div class="mdl-snackbar__text" />
-          <button class="mdl-snackbar__action"></button>
-        </div>
-      </xml>,
-      Show = MdlFfi.showSnackbar (show id)
-    }
-end
+val showSnackbar : string (* id *) -> string (* text *) -> transaction unit
