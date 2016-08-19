@@ -27,13 +27,13 @@ for css_name in fileinput.input():
         css_name.startswith("mdl-progress")):
         urweb_name = css_name.replace("--", "---").replace("-", "_")
     urp_lines.append(
-        "rewrite style Mdl/{} {}".format(urweb_name, css_name))
+        "rewrite style MdlClasses/{} {}".format(urweb_name, css_name))
     ur_lines.append("style {}  (* {} *)".format(urweb_name, css_name))
 
 urp_lines.append("")
-urp_lines.append("mdl")
+urp_lines.append("mdlClasses")
 
-with open("mdl/lib.urp", "w") as urp_file:
+with open("mdl/mdlClasses.urp", "w") as urp_file:
     urp_file.write('\n'.join(urp_lines))
-with open("mdl/mdl.ur", "w") as ur_file:
+with open("mdl/mdlClasses.ur", "w") as ur_file:
     ur_file.write('\n'.join(ur_lines))

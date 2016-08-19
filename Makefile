@@ -12,12 +12,13 @@
 # License for the specific language governing permissions and limitations under
 # the License.
 
-MDL = mdl/lib.urp mdl/mdl.ur
+MDL_GENERATED = mdl/mdlClasses.urp mdl/mdlClasses.ur
 
 .PHONY: all
 all: ugtd ugtd.db
 
-ugtd initialize.sql: ugtd.urp $(MDL) main.urs main.ur
+ugtd initialize.sql: ugtd.urp $(MDL_GENERATED) mdl/lib.urp mdl/mdl.ur main.urs \
+  main.ur
 	urweb -ccompiler build_scripts/clang -output ugtd ugtd
 
 ugtd.db: initialize.sql prepopulate.sql
@@ -26,12 +27,12 @@ ugtd.db: initialize.sql prepopulate.sql
 	sqlite3 $@ <prepopulate.sql
 
 .PHONY: mdl
-mdl: $(MDL)
-$(MDL): mdl/classes
+mdl: $(MDL_GENERATED)
+$(MDL_GENERATED): mdl/classes
 	build_scripts/generate_mdl <$<
 
 .PHONY: clean
 clean:
-	$(RM) $(MDL)
+	$(RM) $(MDL_GENERATED)
 	$(RM) ugtd.db
 	$(RM) ugtd initialize.sql

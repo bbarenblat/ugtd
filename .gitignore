@@ -5,8 +5,8 @@
 .*.swp
 
 # MDL
-mdl/lib.urp
-mdl/mdl.ur
+mdl/mdlClasses.ur
+mdl/mdlClasses.urp
 
 # Ur/Web
 *.db
