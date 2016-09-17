@@ -1,6 +1,7 @@
 benignEffectful MdlFfi.showSnackbar
 ffi mdlFfi
 file /zoBIS4V6.js mdlFfi.js
+html5
 jsFunc MdlFfi.showSnackbar=UrWeb.MdlFfi.showSnackbar
 library mdlClasses
 script /zoBIS4V6.js
