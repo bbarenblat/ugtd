@@ -19,6 +19,7 @@ all: ugtd ugtd.db
 
 ugtd initialize.sql: \
   ugtd.urp \
+    ugtd.css \
     mdl/lib.urp \
       mdl/mdlFfi.urs mdl/mdlFfi.js \
       mdl/mdlClasses.urp \

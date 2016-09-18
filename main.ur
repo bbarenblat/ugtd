@@ -48,9 +48,16 @@ fun renderNextAction action =
   </xml>
 
 
+style hidden
+style visible
+
+datatype mode = NextActions | NewNextAction
+
 val main =
   actionItems <- queryX1' (SELECT * FROM nextAction) renderNextAction;
   setHeader (blessResponseHeader "X-UA-Compatible") "IE=edge";
+  mode <- source NextActions;
+  newNextActionDescription <- Mdl.Textbox.make "Description";
   return <xml>
     <head>
       (* TODO(bbaren): Write a meta-description tag. *)
@@ -70,18 +77,52 @@ val main =
       <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.purple-orange.min.css" />
       <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
       {forceJavaScript}
+
+      <link rel="stylesheet" href="/ugtd.css" />
     </head>
     <body>
-      <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-        <div class="mdl-layout__header mdl-layout__header--waterfall mdl-layout__header--waterfall-hide-top">
-          <div class="mdl-layout__header-row">
-            <span class="mdl-layout-title">Next actions</span>
+      <div dynClass={
+        currentMode <- signal mode;
+        return (case currentMode of
+                    NewNextAction => visible
+                  | _ => hidden)
+      }>
+        <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+          <header class="mdl-layout__header">
+            <button class="mdl-layout__drawer-button" onclick={fn _ => set mode NextActions}>
+              <i class="material-icons">close</i>
+            </button>
+            <div class="mdl-layout__header-row">
+              <span class="mdl-layout-title">New action</span>
+              <div class="mdl-layout-spacer" />
+              (* <button class="mdl-button mdl-js-button" value="Save" /> *)
+            </div>
+          </header>
+          <div class="mdl-layout__content">
+            {newNextActionDescription}
           </div>
         </div>
-        <div class="mdl-layout__content">
-          <ul class="mdl-list">
-            {actionItems}
-          </ul>
+      </div>
+      <div dynClass={
+        currentMode <- signal mode;
+        return (case currentMode of
+                    NextActions => visible
+                  | _ => hidden)
+      }>
+        <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+          <div class="mdl-layout__header mdl-layout__header--waterfall mdl-layout__header--waterfall-hide-top">
+            <div class="mdl-layout__header-row">
+              <span class="mdl-layout-title">Next actions</span>
+            </div>
+          </div>
+          <div class="mdl-layout__content">
+            <ul class="mdl-list">
+              {actionItems}
+            </ul>
+            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored" onclick={fn _ => set mode NewNextAction}>
+              <i class="material-icons">add</i>
+            </button>
+          </div>
         </div>
       </div>
     </body>

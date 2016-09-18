@@ -15,6 +15,17 @@ specific language governing permissions and limitations under the License. *)
 structure Classes = MdlClasses
 open Classes
 
+structure Textbox = struct
+  fun make (placeholder : string) : transaction xbody =
+    id <- fresh;
+    return <xml>
+      <div class="mdl-textfield mdl-js-textfield">
+        <ctextbox class="mdl-textfield__input" id={id} />
+        <label class="mdl-textfield__label" for={id}>{[placeholder]}</label>
+      </div>
+    </xml>
+end
+
 structure Toast = struct
   val make : transaction {Placeholder: xbody,
                           Show: string -> transaction unit} =
