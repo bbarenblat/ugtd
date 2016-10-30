@@ -20,6 +20,8 @@ table nextAction : {
   Done : bool,
 } PRIMARY KEY Id
 
+sequence nextActionId
+
 (* Forces JavaScript to be enabled on the given page, so as to pull in external
 scripts specified in the .urp file. *)
 val forceJavaScript = <xml><script code={return ()} /></xml>
@@ -47,6 +49,13 @@ fun renderNextAction action =
     </li>
   </xml>
 
+val renderNextActions = queryX1' (SELECT * FROM nextAction) renderNextAction
+
+fun newNextAction name =
+  id <- nextval nextActionId;
+  dml (INSERT INTO nextAction (Id, Nam, Done) VALUES ({[4 + id]}, {[name]}, FALSE));
+  renderNextActions
+
 
 style hidden
 style visible
@@ -54,7 +63,7 @@ style visible
 datatype mode = NextActions | NewNextAction
 
 val main =
-  actionItems <- queryX1' (SELECT * FROM nextAction) renderNextAction;
+  actionItems <- bind renderNextActions source;
   setHeader (blessResponseHeader "X-UA-Compatible") "IE=edge";
   mode <- source NextActions;
   newNextActionDescription <- Mdl.Textbox.make "Description";
@@ -95,11 +104,18 @@ val main =
             <div class="mdl-layout__header-row">
               <span class="mdl-layout-title">New action</span>
               <div class="mdl-layout-spacer" />
-              (* <button class="mdl-button mdl-js-button" value="Save" /> *)
+              <button class="mdl-button mdl-js-button" value="Save" onclick={fn _ =>
+                name <- get newNextActionDescription.Source;
+                bind (rpc (newNextAction name)) (set actionItems);
+                sleep 0;
+                Mdl.upgradeAllRegistered;
+                set mode NextActions;
+                set newNextActionDescription.Source ""
+              } />
             </div>
           </header>
           <div class="mdl-layout__content">
-            {newNextActionDescription}
+            {newNextActionDescription.Xml}
           </div>
         </div>
       </div>
@@ -117,7 +133,7 @@ val main =
           </div>
           <div class="mdl-layout__content">
             <ul class="mdl-list">
-              {actionItems}
+              <dyn signal={signal actionItems} />
             </ul>
             <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored" onclick={fn _ => set mode NewNextAction}>
               <i class="material-icons">add</i>

@@ -15,15 +15,22 @@ specific language governing permissions and limitations under the License. *)
 structure Classes = MdlClasses
 open Classes
 
+val upgradeAllRegistered = MdlFfi.upgradeAllRegistered
+
 structure Textbox = struct
-  fun make (placeholder : string) : transaction xbody =
+  fun make (placeholder : string) : transaction {Source : source string,
+                                                 Xml : xbody} =
+    contents <- source "";
     id <- fresh;
-    return <xml>
-      <div class="mdl-textfield mdl-js-textfield">
-        <ctextbox class="mdl-textfield__input" id={id} />
-        <label class="mdl-textfield__label" for={id}>{[placeholder]}</label>
-      </div>
-    </xml>
+    return {
+      Source = contents,
+      Xml = <xml>
+        <div class="mdl-textfield mdl-js-textfield">
+          <ctextbox class="mdl-textfield__input" id={id} source={contents} />
+          <label class="mdl-textfield__label" for={id}>{[placeholder]}</label>
+        </div>
+      </xml>
+    }
 end
 
 structure Toast = struct
