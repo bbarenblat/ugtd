@@ -36,7 +36,7 @@ fun renderNextAction action =
     <li class="mdl-list__item">
       <span class="mdl-list__item-primary-content">
         <span class="mdl-list__item-icon">
-          <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for={c}>
+          <label class="mdl-checkbox" for={c}>
             <ccheckbox id={c} source={done} class="mdl-checkbox__input"
               onchange={
                 b <- get done;
@@ -107,7 +107,6 @@ val main =
                 name <- get newNextActionDescription.Source;
                 bind (rpc (newNextAction name)) (set actionItems);
                 sleep 0;
-                Mdl.upgradeAllRegistered;
                 set mode NextActions;
                 set newNextActionDescription.Source ""
               } />
