@@ -49,7 +49,8 @@ fun renderNextAction action =
     </li>
   </xml>
 
-val renderNextActions = queryX1' (SELECT * FROM nextAction) renderNextAction
+val renderNextActions =
+  queryX1' (SELECT * FROM nextAction WHERE nextAction.Done = FALSE) renderNextAction
 
 fun newNextAction name =
   id <- nextval nextActionId;
