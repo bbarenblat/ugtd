@@ -64,7 +64,6 @@ datatype mode = NextActions | NewNextAction
 
 val main =
   actionItems <- bind renderNextActions source;
-  setHeader (blessResponseHeader "X-UA-Compatible") "IE=edge";
   mode <- source NextActions;
   newNextActionDescription <- Mdl.Textbox.make "Description";
   return <xml>
