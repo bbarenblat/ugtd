@@ -1,5 +1,6 @@
 (* Copyright 2015 Google Inc.
 Copyright 2016 Benjamin Barenblat
+Copyright 2016 Chelsea Voss
 
 Licensed under the Apache License, Version 2.0 (the “License”); you may not use
 this file except in compliance with the License.  You may obtain a copy of the
@@ -63,10 +64,38 @@ style visible
 
 datatype mode = NextActions | NewNextAction
 
+val newActionsDiv actionItems =
+  newNextActionDescription <- Mdl.Textbox.make "Description";
+  return <xml>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <header class="mdl-layout__header">
+        <button class="mdl-layout__drawer-button" onclick={fn _ => History.browserBack}>
+          <i class="material-icons">close</i>
+        </button>
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout-title">New action</span>
+          <div class="mdl-layout-spacer" />
+          <button class="mdl-button mdl-js-button" value="Save" onclick={fn _ =>
+            name <- get newNextActionDescription.Source;
+            bind (rpc (newNextAction name)) (set actionItems);
+            sleep 0;
+            (* TODO(csvoss): Put the right back action here. *)
+            set newNextActionDescription.Source ""
+          } />
+        </div>
+      </header>
+      <div class="mdl-layout__content">
+        {newNextActionDescription.Xml}
+      </div>
+    </div>
+  </xml>
+
+val new = return <xml><head></head><body>Hello, world!</body></xml>
+
 val main =
   actionItems <- bind renderNextActions source;
   mode <- source NextActions;
-  newNextActionDescription <- Mdl.Textbox.make "Description";
+  newActionsDivValue <- newActionsDiv actionItems;
   return <xml>
     <head>
       (* TODO(bbaren): Write a meta-description tag. *)
@@ -96,27 +125,7 @@ val main =
                     NewNextAction => visible
                   | _ => hidden)
       }>
-        <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-          <header class="mdl-layout__header">
-            <button class="mdl-layout__drawer-button" onclick={fn _ => set mode NextActions}>
-              <i class="material-icons">close</i>
-            </button>
-            <div class="mdl-layout__header-row">
-              <span class="mdl-layout-title">New action</span>
-              <div class="mdl-layout-spacer" />
-              <button class="mdl-button mdl-js-button" value="Save" onclick={fn _ =>
-                name <- get newNextActionDescription.Source;
-                bind (rpc (newNextAction name)) (set actionItems);
-                sleep 0;
-                set mode NextActions;
-                set newNextActionDescription.Source ""
-              } />
-            </div>
-          </header>
-          <div class="mdl-layout__content">
-            {newNextActionDescription.Xml}
-          </div>
-        </div>
+      {newActionsDivValue}
       </div>
       <div dynClass={
         currentMode <- signal mode;

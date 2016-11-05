@@ -1,0 +1,6 @@
+ffi historyFfi
+jsFunc HistoryFfi.browserBack=UrWeb.History.browserBack
+file /xAjDQlqm.js historyFfi.js
+script /xAjDQlqm.js
+
+history

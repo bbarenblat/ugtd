@@ -1,5 +1,3 @@
-// Copyright 2015 Google Inc.
-// Copyright 2016 Benjamin Barenblat
 // Copyright 2016 Chelsea Voss
 //
 // Licensed under the Apache License, Version 2.0 (the “License”); you may not
@@ -17,19 +15,13 @@
 "use strict";
 
 (function() {
-  var mdlFfi = {
-    showSnackbar:
-        function(id, text) {
-          document.querySelector('#' + id)
-              .MaterialSnackbar.showSnackbar({message: text});
-        },
+  var history = {
+    browserBack: function() { window.history.back(); }
   };
 
   try {
-    UrWeb.MdlFfi = mdlFfi;
+    UrWeb.History = history;
   } catch (ReferenceError) {
-    console.log("asdf");
-    window.UrWeb = {MdlFfi: mdlFfi};
-    console.log("hjkl");
+    window.UrWeb = {History: history};
   }
-})();  // UrWeb.MdlFfi
+})();

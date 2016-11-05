@@ -1,4 +1,5 @@
 # Copyright 2016 Benjamin Barenblat
+# Copyright 2016 Chelsea Voss
 #
 # Licensed under the Apache License, Version 2.0 (the “License”); you may not
 # use this file except in compliance with the License.  You may obtain a copy of
@@ -20,6 +21,9 @@ all: ugtd ugtd.db
 ugtd initialize.sql: \
   ugtd.urp \
     ugtd.css \
+    history/lib.urp \
+      history/historyFfi.urs history/historyFfi.js \
+      history/history.urs history/history.ur \
     mdl/lib.urp \
       mdl/mdlFfi.urs mdl/mdlFfi.js \
       mdl/mdlClasses.urp \
