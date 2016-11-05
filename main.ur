@@ -64,12 +64,12 @@ style visible
 
 datatype mode = NextActions | NewNextAction
 
-val newActionsDiv actionItems =
+val makeNewActionsDiv goBackAction actionItems =
   newNextActionDescription <- Mdl.Textbox.make "Description";
   return <xml>
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
       <header class="mdl-layout__header">
-        <button class="mdl-layout__drawer-button" onclick={fn _ => History.browserBack}>
+        <button class="mdl-layout__drawer-button" onclick={fn _ => goBackAction}>
           <i class="material-icons">close</i>
         </button>
         <div class="mdl-layout__header-row">
@@ -79,7 +79,7 @@ val newActionsDiv actionItems =
             name <- get newNextActionDescription.Source;
             bind (rpc (newNextAction name)) (set actionItems);
             sleep 0;
-            (* TODO(csvoss): Put the right back action here. *)
+            goBackAction;
             set newNextActionDescription.Source ""
           } />
         </div>
@@ -90,12 +90,15 @@ val newActionsDiv actionItems =
     </div>
   </xml>
 
-val new = return <xml><head></head><body>Hello, world!</body></xml>
+val new =
+  actionItems <- bind renderNextActions source;
+  newActionsDiv <- makeNewActionsDiv History.browserBack actionItems;
+  return <xml><body>{newActionsDiv}</body></xml>
 
 val main =
   actionItems <- bind renderNextActions source;
   mode <- source NextActions;
-  newActionsDivValue <- newActionsDiv actionItems;
+  newActionsDiv <- makeNewActionsDiv (set mode NextActions) actionItems;
   return <xml>
     <head>
       (* TODO(bbaren): Write a meta-description tag. *)
@@ -125,7 +128,7 @@ val main =
                     NewNextAction => visible
                   | _ => hidden)
       }>
-      {newActionsDivValue}
+      {newActionsDiv}
       </div>
       <div dynClass={
         currentMode <- signal mode;
