@@ -16,3 +16,15 @@ val page : {Head : xhead, Body : xbody} -> page
 structure AppBar : sig
   val make : string (* app title *) -> xbody
 end
+
+structure Checkbox : sig
+  val make : bool -> (bool -> transaction unit) -> transaction xbody
+end
+
+structure List : sig
+  structure SingleLine : sig
+    val make : xbody -> xbody
+
+    val item : {Icon : xbody, Content : xbody} -> xbody
+  end
+end

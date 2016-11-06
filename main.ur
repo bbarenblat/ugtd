@@ -23,7 +23,12 @@ fun markNextActionStatus id done =
   dml (UPDATE nextAction SET Done = {[done]} WHERE Id = {[id]})
 
 fun renderNextAction action : transaction xbody =
-  return <xml></xml>
+  c <- Material.Checkbox.make action.Done
+    (fn b => rpc (markNextActionStatus action.Id b));
+  return (Material.List.SingleLine.item {
+    Icon = c,
+    Content = cdata action.Nam
+  })
 
 val renderNextActions =
   queryX1' (SELECT * FROM nextAction WHERE nextAction.Done = FALSE) renderNextAction
@@ -68,6 +73,9 @@ val main =
                   | _ => hidden)
       }>
         {Material.AppBar.make "Next actions"}
+        {Material.List.SingleLine.make <xml>
+          <dyn signal={signal actionItems} />
+        </xml>}
       </div>
     </xml>
   })

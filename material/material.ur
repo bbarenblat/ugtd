@@ -40,3 +40,46 @@ structure AppBar = struct
     </header>
   </xml>
 end
+
+structure Checkbox = struct
+  style checkbox
+  style checked
+
+  val make c onChange =
+    s <- source c;
+    return <xml>
+      <span
+        dynClass={
+          c <- signal s;
+          return (classes checkbox (if c then checked else null))
+        }
+        onclick={fn click =>
+          c <- get s;
+          let
+            val c' = not c
+          in
+            set s c';
+            onChange c'
+          end
+        }
+      >
+      </span>
+      </xml>
+end
+
+structure List = struct
+  structure SingleLine = struct
+    style element
+    style icon
+    style list
+
+    fun make es = <xml><ul class={list}>{es}</ul></xml>
+
+    fun item i = <xml>
+      <li class={element}>
+        <span class={icon}>{i.Icon}</span>
+        {i.Content}
+      </li>
+    </xml>
+  end
+end
