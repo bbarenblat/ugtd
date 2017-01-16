@@ -1,5 +1,5 @@
 /* Copyright 2015 Google Inc.
-Copyright 2016 Benjamin Barenblat
+Copyright 2016, 2017 Benjamin Barenblat
 
 Licensed under the Apache License, Version 2.0 (the “License”); you may not use
 this file except in compliance with the License.  You may obtain a copy of the
@@ -55,6 +55,7 @@ html, body {
   box-sizing: border-box;
   border: 2px solid #9c27b0;
   border-radius: 2px;
+  transition: background 300ms;
 }
 
 .Material_Checkbox_checked {
