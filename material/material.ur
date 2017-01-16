@@ -20,25 +20,28 @@ fun icon s = <xml><i class={materialIcon}>{[s]}</i></xml>
 fun inNewStackingContext x = <xml><div class={stackingContext}>{x}</div></xml>
 
 structure Ripple : sig
-  val inkAnimation : int -> int -> source (option {X : int, Y : int}) -> xbody
+  val make : int (* radius *)
+    -> transaction {Placeholder : xbody,
+                    Trigger : {X : int, Y : int} -> transaction unit}
 end = struct
   style ink
 
-  fun inkStyle width height xy =
+  fun inkStyle radius xy =
     let
       fun p a b = value (property a) (atom (show b ^ "px"))
+      val diameter = 2 * radius
     in
       oneProperty
         (oneProperty
            (oneProperty
               (oneProperty noStyle
-                           (p "width" width))
-              (p "height" height))
-           (p "left" (xy.X - width / 2)))
-        (p "top" (xy.Y - height / 2))
+                           (p "width" diameter))
+              (p "height" diameter))
+           (p "left" (xy.X - radius)))
+        (p "top" (xy.Y - radius))
     end
 
-  fun inkAnimation width height s =
+  fun inkAnimation radius s =
     <xml>
       <dyn
         signal={
@@ -46,12 +49,17 @@ end = struct
           return (case v of
                       None => <xml></xml>
                     | Some xy => <xml>
-                        <span class={ink} style={inkStyle width height xy}>
+                        <span class={ink} style={inkStyle radius xy}>
                         </span>
                       </xml>)
         }
       />
     </xml>
+
+  fun make radius =
+    center <- source None;
+    return {Placeholder = inkAnimation radius center,
+            Trigger = fn xy => set center (Some xy)}
 end
 
 (* TODO(bbaren): Support attributes in the arguments. *)
@@ -96,17 +104,17 @@ structure Checkbox = struct
 
   val make c onChange =
     s <- source c;
-    inkCenter <- source None;
+    ink <- Ripple.make (width / 2);
     return (inNewStackingContext <xml>
       <div class={container}>
-        {Ripple.inkAnimation width height inkCenter}
+        {ink.Placeholder}
         <span
           dynClass={
             c <- signal s;
             return (classes checkbox (if c then checked else null))
           }
           onclick={fn click =>
-            set inkCenter (Some {X = click.ClientX, Y = click.ClientY});
+            ink.Trigger {X = click.ClientX, Y = click.ClientY};
             c <- get s;
             let
               val c' = not c
@@ -131,19 +139,19 @@ structure FloatingActionButton = struct
   val height = 56
 
   fun make s clickHandler =
-    inkCenter <- source None;
+    ink <- Ripple.make (width / 2);
     return <xml>
       <div class={container}>
         <button
           class={element}
           onclick={fn click =>
-             set inkCenter (Some {X = click.ClientX, Y = click.ClientY});
+             ink.Trigger {X = click.ClientX, Y = click.ClientY};
              clickHandler click
           }
         >
           {icon s}
         </button>
-        {Ripple.inkAnimation width height inkCenter}
+        {ink.Placeholder}
       </div>
     </xml>
 end
