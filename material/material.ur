@@ -130,14 +130,15 @@ structure FloatingActionButton = struct
   val width = 56
   val height = 56
 
-  fun make s =
+  fun make s clickHandler =
     inkCenter <- source None;
     return <xml>
       <div class={container}>
         <button
           class={element}
           onclick={fn click =>
-             set inkCenter (Some {X = click.ClientX, Y = click.ClientY})
+             set inkCenter (Some {X = click.ClientX, Y = click.ClientY});
+             clickHandler click
           }
         >
           {icon s}

@@ -22,7 +22,7 @@ structure Checkbox : sig
 end
 
 structure FloatingActionButton : sig
-  val make : string -> transaction xbody
+  val make : string -> (mouseEvent -> transaction unit) -> transaction xbody
 end
 
 structure List : sig

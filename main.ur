@@ -47,7 +47,8 @@ datatype mode = NextActions | NewNextAction
 val main =
   actionItems <- bind renderNextActions source;
   mode <- source NextActions;
-  floatingActionButton <- Material.FloatingActionButton.make "add";
+  floatingActionButton <-
+      Material.FloatingActionButton.make "add" (fn _ => set mode NewNextAction);
   return (Material.page {
     Head = <xml>
       (* TODO(bbaren): Write a meta-description tag. *)
