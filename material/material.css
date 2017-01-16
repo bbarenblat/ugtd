@@ -30,7 +30,7 @@ html, body {
   transform: scale(0);
   background: #fafafa;
   border-radius: 100%;
-  animation: ripple 300ms linear;
+  animation: ripple 300ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .Material_AppBar_bar {
