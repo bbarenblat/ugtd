@@ -1,4 +1,4 @@
-(* Copyright 2016 Benjamin Barenblat
+(* Copyright 2016, 2017 Benjamin Barenblat
 
 Licensed under the Apache License, Version 2.0 (the “License”); you may not use
 this file except in compliance with the License.  You may obtain a copy of the
@@ -19,6 +19,10 @@ end
 
 structure Checkbox : sig
   val make : bool -> (bool -> transaction unit) -> transaction xbody
+end
+
+structure FloatingActionButton : sig
+  val make : string -> transaction xbody
 end
 
 structure List : sig

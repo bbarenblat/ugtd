@@ -1,4 +1,4 @@
-(* Copyright 2016 Benjamin Barenblat
+(* Copyright 2016, 2017 Benjamin Barenblat
 
 Licensed under the Apache License, Version 2.0 (the “License”); you may not use
 this file except in compliance with the License.  You may obtain a copy of the
@@ -47,6 +47,7 @@ datatype mode = NextActions | NewNextAction
 val main =
   actionItems <- bind renderNextActions source;
   mode <- source NextActions;
+  floatingActionButton <- Material.FloatingActionButton.make "add";
   return (Material.page {
     Head = <xml>
       (* TODO(bbaren): Write a meta-description tag. *)
@@ -76,6 +77,7 @@ val main =
         {Material.List.SingleLine.make <xml>
           <dyn signal={signal actionItems} />
         </xml>}
+        {floatingActionButton}
       </div>
     </xml>
   })

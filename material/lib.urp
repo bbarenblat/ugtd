@@ -1,3 +1,4 @@
 file /material.css material.css
+rewrite style Material/materialIcon material-icons
 
 material
