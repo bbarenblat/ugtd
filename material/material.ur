@@ -20,52 +20,51 @@ fun icon s = <xml><i class={materialIcon}>{[s]}</i></xml>
 fun inNewStackingContext x = <xml><div class={stackingContext}>{x}</div></xml>
 
 structure Ripple : sig
-  val make : int (* radius *)
-    -> transaction {Placeholder : xbody,
-                    Trigger : {X : int, Y : int} -> transaction unit}
+    val make : int (* radius *)
+               -> transaction { Placeholder : xbody,
+                                Trigger : { X : int, Y : int }
+                                          -> transaction unit }
 end = struct
-  style ink
+    style ink
 
-  fun inkStyle radius xy =
-    let
-      fun p a b = value (property a) (atom (show b ^ "px"))
-      val diameter = 2 * radius
-    in
-      oneProperty
-        (oneProperty
-           (oneProperty
-              (oneProperty noStyle
-                           (p "width" diameter))
-              (p "height" diameter))
-           (p "left" (xy.X - radius)))
-        (p "top" (xy.Y - radius))
-    end
+    fun inkStyle radius xy =
+        let
+            fun p a b = value (property a) (atom (show b ^ "px"))
+            val diameter = 2 * radius
+        in
+            oneProperty
+                (oneProperty
+                     (oneProperty
+                          (oneProperty noStyle
+                                       (p "width" diameter))
+                          (p "height" diameter))
+                     (p "left" (xy.X - radius)))
+                (p "top" (xy.Y - radius))
+        end
 
-  fun inkAnimation radius s =
-    <xml>
-      <dyn
-        signal={
-          v <- signal s;
-          return (case v of
-                      None => <xml></xml>
-                    | Some xy => <xml>
-                        <span class={ink} style={inkStyle radius xy}>
-                        </span>
-                      </xml>)
-        }
-      />
+    fun inkAnimation radius s = <xml>
+      <dyn signal={v <- signal s;
+                   return (case v of
+                               None => <xml></xml>
+                             | Some xy =>
+                               <xml>
+                                 <span class={ink}
+                                       style={inkStyle radius xy}>
+                                 </span>
+                               </xml>)} />
     </xml>
 
-  fun make radius =
-    center <- source None;
-    return {Placeholder = inkAnimation radius center,
-            Trigger = fn xy => set center (Some xy)}
+    fun make radius =
+        center <- source None;
+        return {Placeholder = inkAnimation radius center,
+                Trigger = fn xy => set center (Some xy)}
 end
 
 (* TODO(bbaren): Support attributes in the arguments. *)
 fun page p = <xml>
   <head>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <link rel="stylesheet" href="/material.css" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -82,93 +81,87 @@ fun page p = <xml>
 </xml>
 
 structure AppBar = struct
-  style bar
-  style title
+    style bar
+    style title
 
-  fun make t = <xml>
-    <header class={bar}>
-      <h1 class={title}>{[t]}</h1>
-    </header>
-  </xml>
+    fun make t = <xml>
+      <header class={bar}>
+        <h1 class={title}>{[t]}</h1>
+      </header>
+    </xml>
 end
 
 structure Checkbox = struct
-  style checkbox
-  style checked
-  style container
+    style checkbox
+    style checked
+    style container
 
-  (* Pixel dimensions of the checkbox.  If you update these, you must also
-  update the CSS file. *)
-  val width = 24
-  val height = 24
+    (* Pixel dimensions of the checkbox.  If you update these, you must also
+    update the CSS file. *)
+    val width = 24
+    val height = 24
 
-  val make c onChange =
-    s <- source c;
-    ink <- Ripple.make (width / 2);
-    return (inNewStackingContext <xml>
-      <div class={container}>
-        {ink.Placeholder}
-        <span
-          dynClass={
-            c <- signal s;
-            return (classes checkbox (if c then checked else null))
-          }
-          onclick={fn click =>
-            ink.Trigger {X = click.ClientX, Y = click.ClientY};
-            c <- get s;
-            let
-              val c' = not c
-            in
-              set s c';
-              onChange c'
-            end
-          }
-        >
-        </span>
-      </div>
-      </xml>)
+    val make c onChange =
+        s <- source c;
+        ink <- Ripple.make (width / 2);
+        return (inNewStackingContext <xml>
+          <div class={container}>
+            {ink.Placeholder}
+            <span dynClass={c <- signal s;
+                            return (classes checkbox
+                                            (if c then checked else null))}
+                  onclick={fn click =>
+                              ink.Trigger {X = click.ClientX,
+                                           Y = click.ClientY};
+                              c <- get s;
+                              let
+                                  val c' = not c
+                              in
+                                  set s c';
+                                  onChange c'
+                              end}></span>
+          </div>
+        </xml>)
 end
 
 structure FloatingActionButton = struct
-  style container
-  style element
+    style container
+    style element
 
-  (* Pixel dimensions of the button.  If you update these, you must also
-  update the CSS file. *)
-  val width = 56
-  val height = 56
+    (* Pixel dimensions of the button.  If you update these, you must also
+    update the CSS file. *)
+    val width = 56
+    val height = 56
 
-  fun make s clickHandler =
-    ink <- Ripple.make (width / 2);
-    return <xml>
-      <div class={container}>
-        <button
-          class={element}
-          onclick={fn click =>
-             ink.Trigger {X = click.ClientX, Y = click.ClientY};
-             clickHandler click
-          }
-        >
-          {icon s}
-        </button>
-        {ink.Placeholder}
-      </div>
-    </xml>
+    fun make s clickHandler =
+        ink <- Ripple.make (width / 2);
+        return <xml>
+          <div class={container}>
+            <button class={element}
+                    onclick={fn click =>
+                                ink.Trigger {X = click.ClientX,
+                                             Y = click.ClientY};
+                                clickHandler click}>
+              {icon s}
+            </button>
+            {ink.Placeholder}
+          </div>
+        </xml>
 end
 
 structure List = struct
-  structure SingleLine = struct
-    style element
-    style icon
-    style list
+    structure SingleLine = struct
+        style element
+        style icon
+        style list
 
-    fun make es = <xml><ul class={list}>{es}</ul></xml>
+        fun make es = <xml><ul class={list}>{es}</ul></xml>
 
-    fun item i = <xml>
-      <li class={element}>
-        <span class={icon}>{i.Icon}</span>
-        {i.Content}
-      </li>
-    </xml>
-  end
+        fun item i = <xml>
+          <li class={element}>
+            <span class={icon}>{i.Icon}</span>
+            {i.Content}
+          </li>
+        </xml>
+    end
 end

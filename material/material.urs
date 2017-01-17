@@ -14,21 +14,21 @@ specific language governing permissions and limitations under the License. *)
 val page : {Head : xhead, Body : xbody} -> page
 
 structure AppBar : sig
-  val make : string (* app title *) -> xbody
+    val make : string (* app title *) -> xbody
 end
 
 structure Checkbox : sig
-  val make : bool -> (bool -> transaction unit) -> transaction xbody
+    val make : bool -> (bool -> transaction unit) -> transaction xbody
 end
 
 structure FloatingActionButton : sig
-  val make : string -> (mouseEvent -> transaction unit) -> transaction xbody
+    val make : string -> (mouseEvent -> transaction unit) -> transaction xbody
 end
 
 structure List : sig
-  structure SingleLine : sig
-    val make : xbody -> xbody
+    structure SingleLine : sig
+        val make : xbody -> xbody
 
-    val item : {Icon : xbody, Content : xbody} -> xbody
-  end
+        val item : {Icon : xbody, Content : xbody} -> xbody
+    end
 end
